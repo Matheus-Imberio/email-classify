@@ -22,13 +22,13 @@ def run_backend():
 
 def run_frontend():
     """Inicia o frontend Streamlit."""
-    time.sleep(5)  # Aguarda backend iniciar
-    streamlit_port = os.environ.get("STREAMLIT_PORT", "8501")
-    print(f"🎨 Iniciando Frontend na porta {streamlit_port}...")
+    # No Railway, usa a variável PORT
+    port = os.environ.get("PORT", "8501")
+    print(f"🎨 Iniciando Frontend Streamlit na porta {port}...")
     subprocess.run([
         sys.executable, "-m", "streamlit",
         "run", "app/frontend.py",
-        "--server.port", streamlit_port,
+        "--server.port", port,
         "--server.address", "0.0.0.0",
         "--server.headless", "true",
         "--browser.gatherUsageStats", "false",
