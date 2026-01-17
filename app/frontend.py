@@ -506,22 +506,23 @@ with col1:
     # Card principal
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     
-    # Valor inicial do text area (pode vir de arquivo carregado)
-    initial_value = st.session_state.get('email_content', '')
+    # Inicializa o session state do input se houver conteúdo de arquivo
+    if 'email_content' in st.session_state and st.session_state.email_content:
+        st.session_state.email_input = st.session_state.email_content
+        st.session_state.email_content = ""  # Limpa após usar
+    
+    # Inicializa a key se não existir
+    if 'email_input' not in st.session_state:
+        st.session_state.email_input = ""
     
     # Text area
     email_text = st.text_area(
         "Email",
-        value=initial_value,
         placeholder="Cole o texto do email aqui ou arraste um arquivo .txt ou .pdf...",
         height=200,
         key="email_input",
         label_visibility="collapsed"
     )
-    
-    # Limpa o session state após usar
-    if 'email_content' in st.session_state and st.session_state.email_content:
-        st.session_state.email_content = ""
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -568,10 +569,9 @@ with col1:
                         content = None
                 
                 if content and content.strip():
-                    # Atualiza o session state
+                    # Atualiza o session state - será copiado para email_input no próximo rerun
                     st.session_state.email_content = content.strip()
-                    st.success(f"✅ Arquivo '{uploaded_file.name}' carregado!")
-                    time.sleep(0.5)
+                    st.success(f"✅ Arquivo '{uploaded_file.name}' carregado com {len(content.strip())} caracteres!")
                     st.rerun()
                 else:
                     st.warning("⚠️ O arquivo está vazio ou não foi possível extrair texto.")
