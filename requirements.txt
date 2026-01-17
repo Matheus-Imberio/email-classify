@@ -25,4 +25,5 @@ cachetools>=5.3.2
 
 # Frontend
 streamlit>=1.30.0
+PyPDF2>=3.0.0
 

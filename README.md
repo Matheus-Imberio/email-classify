@@ -2,61 +2,92 @@
 
 Sistema completo para classificação automática de emails usando **GPT** e técnicas de **NLP**, com interface web moderna em **Streamlit**.
 
-![Interface do Email Intelligence](https://img.shields.io/badge/Status-Ativo-brightgreen) ![Python](https://img.shields.io/badge/Python-3.10+-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green) ![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-red)
+![Status](https://img.shields.io/badge/Status-Ativo-brightgreen)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-red)
+
+---
 
 ## 🚀 Funcionalidades
 
-- **🤖 Classificação Inteligente**: Classifica emails como `Produtivo` ou `Improdutivo` usando IA
-- **✍️ Geração de Respostas**: Cria respostas automáticas profissionais
-- **📊 Pontuação de Produtividade**: Escala de 0-10 com nível de confiança
-- **🔍 Pré-processamento NLP**: Processamento de texto com spaCy
-- **💾 Cache em Memória**: Evita processamento duplicado
-- **📜 Histórico**: Acompanhe todos os emails classificados
-- **🎨 Interface Web**: Frontend moderno e intuitivo com Streamlit
+- 🤖 **Classificação Inteligente** - Classifica emails como `Produtivo` ou `Improdutivo` usando IA
+- ✍️ **Geração de Respostas** - Cria respostas automáticas profissionais
+- 📊 **Pontuação de Produtividade** - Escala de 0-10 com nível de confiança
+- 🔍 **Pré-processamento NLP** - Processamento de texto com spaCy
+- 💾 **Cache em Memória** - Evita processamento duplicado
+- 📜 **Histórico** - Acompanhe todos os emails classificados
+- 🎨 **Interface Web** - Frontend moderno e intuitivo
 
-## 📋 Requisitos
+---
 
-- Python 3.10+
-- Chave de API da OpenAI
+## 📋 Pré-requisitos
 
-## 🛠️ Instalação
+- **Python 3.10+**
+- **Chave de API da OpenAI** ([Obter aqui](https://platform.openai.com/api-keys))
 
-### 1. Clone e configure o ambiente
+---
+
+## 🛠️ Instalação Local
+
+### 1. Clone o repositório
 
 ```bash
-# Crie ambiente virtual
+git clone https://github.com/seu-usuario/email-classifier.git
+cd email-classifier
+```
+
+### 2. Crie e ative o ambiente virtual
+
+**Windows:**
+```bash
 python -m venv venv
+venv\Scripts\activate
+```
 
-# Ative o ambiente
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # Linux/Mac
+**Linux/Mac:**
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 
-# Instale dependências
+### 3. Instale as dependências
+
+```bash
 pip install -r requirements.txt
+```
 
-# (Opcional) Baixe modelo spaCy para português
+### 4. (Opcional) Baixe o modelo spaCy para português
+
+```bash
 python -m spacy download pt_core_news_sm
 ```
 
-### 2. Configure as variáveis de ambiente
+### 5. Configure as variáveis de ambiente
 
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-OPENAI_API_KEY=sua-chave-aqui
+OPENAI_API_KEY=sua-chave-da-openai-aqui
 OPENAI_MODEL=gpt-4o-mini
 DEBUG=false
 ```
 
-## ▶️ Como Executar
+> ⚠️ **Importante:** Nunca compartilhe sua chave da OpenAI! O arquivo `.env` já está no `.gitignore`.
 
-### Opção 1: Script Windows (Recomendado)
+---
+
+## ▶️ Como Executar Localmente
+
+### Opção 1: Script Windows (Mais fácil)
 
 ```bash
 start.bat
 ```
 
-Isso abre duas janelas automaticamente com backend e frontend.
+Abre duas janelas automaticamente: uma com o backend e outra com o frontend.
+
+---
 
 ### Opção 2: Script Python
 
@@ -64,48 +95,52 @@ Isso abre duas janelas automaticamente com backend e frontend.
 python run.py
 ```
 
-### Opção 3: Executar separadamente (Desenvolvimento)
+Inicia backend e frontend simultaneamente.
 
-**Terminal 1 - Backend:**
+---
+
+### Opção 3: Executar Separadamente (Recomendado para desenvolvimento)
+
+**Terminal 1 - Backend (API):**
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-**Terminal 2 - Frontend:**
+**Terminal 2 - Frontend (Interface):**
 ```bash
 streamlit run app/frontend.py
 ```
 
-Ou use o script auxiliar:
-```bash
-python run_frontend.py
-```
+---
 
 ### Opção 4: Docker
 
 ```bash
 # Configure a variável de ambiente
-set OPENAI_API_KEY=sua-chave-aqui      # Windows
 export OPENAI_API_KEY=sua-chave-aqui   # Linux/Mac
+set OPENAI_API_KEY=sua-chave-aqui      # Windows
 
 # Execute com Docker Compose
 docker-compose up -d
 ```
 
+---
+
 ## 🌐 Acessar a Aplicação
 
 Após iniciar, acesse:
 
-| Serviço | URL |
-|---------|-----|
-| **🎨 Frontend (Interface)** | http://localhost:8501 |
-| **📡 Backend API** | http://localhost:8000 |
-| **📚 Swagger UI** | http://localhost:8000/docs |
-| **📖 ReDoc** | http://localhost:8000/redoc |
+| Serviço | URL | Descrição |
+|---------|-----|-----------|
+| 🎨 **Frontend** | http://localhost:8501 | Interface do usuário |
+| 📡 **Backend API** | http://localhost:8000 | API REST |
+| 📚 **Documentação** | http://localhost:8000/docs | Swagger UI interativo |
+| 📖 **ReDoc** | http://localhost:8000/redoc | Documentação alternativa |
 
 ---
 
-## 🔌 Endpoints da API
+
+## 🔌 API Endpoints
 
 ### `POST /api/v1/classify-email`
 
@@ -114,7 +149,7 @@ Classifica um email e gera resposta sugerida.
 **Request:**
 ```json
 {
-  "email_content": "Prezado, solicito uma análise urgente do relatório financeiro do mês anterior."
+  "email_content": "Prezado, solicito uma análise urgente do relatório financeiro."
 }
 ```
 
@@ -123,7 +158,7 @@ Classifica um email e gera resposta sugerida.
 {
   "classification": "Produtivo",
   "pontuation": 8,
-  "suggested_reply": "Olá, recebemos sua solicitação e já estamos analisando. Em breve retornaremos com mais informações.",
+  "suggested_reply": "Prezado, recebemos sua solicitação e estamos analisando...",
   "confidence": 0.91
 }
 ```
@@ -132,13 +167,13 @@ Classifica um email e gera resposta sugerida.
 
 ### `GET /api/v1/emails`
 
-Lista emails classificados, ordenados por pontuação.
+Lista emails classificados com paginação.
 
 | Parâmetro | Tipo | Padrão | Descrição |
 |-----------|------|--------|-----------|
 | `page` | int | 1 | Número da página |
 | `page_size` | int | 10 | Itens por página |
-| `order` | string | desc | Ordenação: `desc` ou `asc` |
+| `order` | string | desc | `desc` ou `asc` |
 
 ---
 
@@ -169,7 +204,7 @@ Retorna versão da API.
 ## 📁 Estrutura do Projeto
 
 ```
-projeto-teste/
+email-classifier/
 ├── app/
 │   ├── api/
 │   │   └── routes.py              # Endpoints da API
@@ -184,33 +219,84 @@ projeto-teste/
 │   │   └── test_nlp.py
 │   ├── config.py                  # Configurações
 │   ├── models.py                  # Schemas Pydantic
-│   ├── main.py                    # Aplicação FastAPI
-│   └── frontend.py                # Interface Streamlit
-├── run.py                         # Script para rodar tudo
-├── run_frontend.py                # Script para rodar só o frontend
+│   ├── main.py                    # Aplicação FastAPI (Backend)
+│   └── frontend.py                # Interface Streamlit (Frontend)
+│
+├── railway.json                   # Config Railway (Backend)
+├── railway-frontend.json          # Config Railway (Frontend)
+├── start_frontend.sh              # Script inicialização frontend
+├── run.py                         # Rodar backend + frontend
+├── run_frontend.py                # Rodar só o frontend
 ├── start.bat                      # Script Windows
-├── requirements.txt
-├── pyproject.toml
-├── Dockerfile
-├── docker-compose.yml
+│
+├── requirements.txt               # Dependências Python
+├── Dockerfile                     # Container Docker
+├── docker-compose.yml             # Orquestração Docker
+├── .env.example                   # Exemplo de variáveis
+├── .gitignore
 └── README.md
 ```
+
+---
 
 ## ⚙️ Variáveis de Ambiente
 
 | Variável | Obrigatório | Padrão | Descrição |
 |----------|-------------|--------|-----------|
-| `OPENAI_API_KEY` | ✅ | - | Chave da API OpenAI |
-| `OPENAI_MODEL` | ❌ | gpt-4o-mini | Modelo GPT |
-| `OPENAI_TIMEOUT` | ❌ | 30 | Timeout em segundos |
-| `DEBUG` | ❌ | false | Modo debug |
+| `OPENAI_API_KEY` | ✅ Sim | - | Chave da API OpenAI |
+| `OPENAI_MODEL` | Não | `gpt-4o-mini` | Modelo GPT a usar |
+| `OPENAI_TIMEOUT` | Não | `30` | Timeout em segundos |
+| `DEBUG` | Não | `false` | Modo debug |
+| `API_URL` | Não* | `http://localhost:8000/api/v1` | URL do backend (para frontend) |
+| `PORT` | Não | `8080` | Porta do servidor |
+
+> *Obrigatório no frontend em produção
+
+---
 
 ## 🧪 Testes
 
 ```bash
+# Instale dependências de teste
+pip install pytest pytest-asyncio httpx
+
+# Execute os testes
 pytest app/tests/ -v
 ```
+
+---
+
+## 🐛 Solução de Problemas
+
+### Erro: "OPENAI_API_KEY não configurada"
+- Verifique se o arquivo `.env` existe e contém a chave
+- Ou defina a variável de ambiente diretamente
+
+### Erro 502 no Railway
+- Verifique os logs em **"View logs"**
+- Certifique-se que o `PORT` está definido nas variáveis
+- Verifique se o `railway-frontend.json` está correto
+
+### Frontend não conecta ao Backend
+- Verifique se a variável `API_URL` está correta
+- Certifique-se que o backend está rodando
+
+### Builds lentos no Railway
+- Planos gratuitos têm menor prioridade
+- Tente em horários de menor tráfego (manhã cedo)
+
+---
 
 ## 📝 Licença
 
 © 2026 Email Intelligence Classifier. Todos os direitos reservados.
+
+---
+
+## 🤝 Contribuindo
+
+1. Faça um Fork do projeto
+2. Crie sua branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request

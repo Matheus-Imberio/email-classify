@@ -506,14 +506,22 @@ with col1:
     # Card principal
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     
+    # Valor inicial do text area (pode vir de arquivo carregado)
+    initial_value = st.session_state.get('email_content', '')
+    
     # Text area
     email_text = st.text_area(
         "Email",
+        value=initial_value,
         placeholder="Cole o texto do email aqui ou arraste um arquivo .txt ou .pdf...",
         height=200,
         key="email_input",
         label_visibility="collapsed"
     )
+    
+    # Limpa o session state após usar
+    if 'email_content' in st.session_state and st.session_state.email_content:
+        st.session_state.email_content = ""
     
     st.markdown('</div>', unsafe_allow_html=True)
     
@@ -530,11 +538,46 @@ with col1:
         
         if uploaded_file is not None:
             try:
-                content = uploaded_file.read().decode('utf-8')
-                st.session_state.email_content = content
-                st.rerun()
-            except:
-                st.warning("Não foi possível ler o arquivo.")
+                file_extension = uploaded_file.name.split('.')[-1].lower()
+                content = None
+                
+                if file_extension == 'txt':
+                    # Tenta diferentes encodings para TXT
+                    raw_bytes = uploaded_file.read()
+                    for encoding in ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']:
+                        try:
+                            content = raw_bytes.decode(encoding)
+                            break
+                        except UnicodeDecodeError:
+                            continue
+                    if content is None:
+                        content = raw_bytes.decode('utf-8', errors='ignore')
+                
+                elif file_extension == 'pdf':
+                    # Extrai texto do PDF
+                    try:
+                        from PyPDF2 import PdfReader
+                        pdf_reader = PdfReader(uploaded_file)
+                        content = ""
+                        for page in pdf_reader.pages:
+                            text = page.extract_text()
+                            if text:
+                                content += text + "\n"
+                    except ImportError:
+                        st.error("❌ Biblioteca PyPDF2 não instalada.")
+                        content = None
+                
+                if content and content.strip():
+                    # Atualiza o session state
+                    st.session_state.email_content = content.strip()
+                    st.success(f"✅ Arquivo '{uploaded_file.name}' carregado!")
+                    time.sleep(0.5)
+                    st.rerun()
+                else:
+                    st.warning("⚠️ O arquivo está vazio ou não foi possível extrair texto.")
+                    
+            except Exception as e:
+                st.warning(f"❌ Não foi possível ler o arquivo: {str(e)}")
     
     with col_counter:
         char_count = len(email_text) if email_text else 0
