@@ -435,6 +435,12 @@ if 'email_content' not in st.session_state:
 if 'result' not in st.session_state:
     st.session_state.result = None
 
+if 'file_processed' not in st.session_state:
+    st.session_state.file_processed = False
+
+if 'uploader_key' not in st.session_state:
+    st.session_state.uploader_key = 0
+
 # ============== Funções ==============
 
 import os
@@ -530,14 +536,16 @@ with col1:
     col_upload, col_counter, col_btn = st.columns([1, 1.5, 1])
     
     with col_upload:
+        # Usa key dinâmica para poder limpar o uploader
         uploaded_file = st.file_uploader(
             "Upload",
             type=['txt', 'pdf'],
             label_visibility="collapsed",
-            key="file_uploader"
+            key=f"file_uploader_{st.session_state.uploader_key}"
         )
         
-        if uploaded_file is not None:
+        # Só processa se tiver arquivo E ainda não foi processado
+        if uploaded_file is not None and not st.session_state.file_processed:
             try:
                 file_extension = uploaded_file.name.split('.')[-1].lower()
                 content = None
@@ -571,13 +579,19 @@ with col1:
                 if content and content.strip():
                     # Atualiza o session state - será copiado para email_input no próximo rerun
                     st.session_state.email_content = content.strip()
-                    st.success(f"✅ Arquivo '{uploaded_file.name}' carregado com {len(content.strip())} caracteres!")
+                    # Marca como processado e incrementa key para limpar o uploader
+                    st.session_state.file_processed = True
+                    st.session_state.uploader_key += 1
                     st.rerun()
                 else:
                     st.warning("⚠️ O arquivo está vazio ou não foi possível extrair texto.")
                     
             except Exception as e:
                 st.warning(f"❌ Não foi possível ler o arquivo: {str(e)}")
+        
+        # Reset a flag quando não tem arquivo (usuário removeu ou foi limpo)
+        if uploaded_file is None:
+            st.session_state.file_processed = False
     
     with col_counter:
         char_count = len(email_text) if email_text else 0
