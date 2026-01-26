@@ -286,17 +286,3 @@ pytest app/tests/ -v
 - Tente em horários de menor tráfego (manhã cedo)
 
 ---
-
-## 📝 Licença
-
-© 2026 Email Intelligence Classifier. Todos os direitos reservados.
-
----
-
-## 🤝 Contribuindo
-
-1. Faça um Fork do projeto
-2. Crie sua branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
